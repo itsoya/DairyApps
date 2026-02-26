@@ -17,42 +17,95 @@ namespace DairyApp.Controllers
             List<DiaryEntry> entries = _db.DiaryEntries.ToList();
             return View(entries);
         }
+
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
-        public IActionResult Create(DiaryEntry entry)
+        public IActionResult Create(DiaryEntry obj)
         {
+            if (obj != null && obj.Title.Length < 3)
+            {
+                ModelState.AddModelError("Title", "Title must be at least 3 characters long.");
+            }
+
             if (ModelState.IsValid)
             {
-                _db.DiaryEntries.Add(entry);
+                _db.DiaryEntries.Add(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index", "DairyEntries");
             }
-            return View(entry);
+
+            if (!ModelState.IsValid)
+            {
+                return View(obj);
+            }
+            return View(obj);
         }
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpGet]
+        public IActionResult Edit(int id)
         {
             var entry = _db.DiaryEntries.Find(id);
+            if (entry == null || entry.Id != id)
+            {
+                return NotFound();
+            }
             if (entry != null)
             {
-                _db.DiaryEntries.Remove(entry);
-                _db.SaveChanges();
+                return View(entry);
             }
             return RedirectToAction("Index", "DairyEntries");
         }
-        [HttpPut]
-        public IActionResult Update(int id, DiaryEntry updatedEntry)
+
+        [HttpPost]
+        public IActionResult Edit(DiaryEntry obj)
+        {
+            if (obj != null && obj.Title.Length < 3)
+            {
+                ModelState.AddModelError("Title", "Title must be at least 3 characters long.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _db.DiaryEntries.Update(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index", "DairyEntries");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(obj);
+            }
+            return View(obj);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
         {
             var entry = _db.DiaryEntries.Find(id);
+            if (entry == null || entry.Id != id)
+            {
+                return NotFound();
+            }
             if (entry != null)
             {
-                entry.Title = updatedEntry.Title;
-                entry.Content = updatedEntry.Content;
-                _db.SaveChanges();
+                return View(entry);
             }
+            return RedirectToAction("Index", "DairyEntries");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(DiaryEntry obj)
+        {
+            var entry = _db.DiaryEntries.Find(obj.Id);
+            if (entry == null)
+            {
+                return NotFound();
+            }
+            _db.DiaryEntries.Remove(entry);
+            _db.SaveChanges();
             return RedirectToAction("Index", "DairyEntries");
         }
     }

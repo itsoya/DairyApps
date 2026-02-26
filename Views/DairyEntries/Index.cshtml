@@ -36,7 +36,12 @@
                         <td>@entry.Title</td>
                         <td>@entry.Content</td>
                         <td>@entry.Created</td>
-                        <td>Edit and Delete</td>
+                        <td>
+                            <a class="btn btn-primary" asp-controller="DairyEntries" asp-action="Edit"
+                               asp-route-id="@entry.Id">Edit</a>
+                            <a class="btn btn-danger" asp-controller="DairyEntries" asp-action="Delete"
+                               asp-route-id="@entry.Id">Delete</a>
+                        </td>
                     </tr>
                 }
             </tbody>
