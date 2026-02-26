@@ -58,3 +58,4 @@ dkms.conf
 *.cache
 /obj/Debug/net10.0
 /obj/Debug
+/obj
